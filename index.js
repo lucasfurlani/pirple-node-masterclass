@@ -7,9 +7,10 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
-const config = require('./config');
+const config = require('./lib/config');
 const fs = require('fs');
 const handlers = require('./lib/handlers')
+const helpers = require('./lib/helpers');
 
 // Instantiate the HTTP server
 let httpServer = http.createServer(function(req, res){
@@ -73,9 +74,9 @@ let unifiedServer =  function(req, res) {
              'queryStringObject' : queryStringObject,
              'method' : method,
              'headers' : headers,
-             'payload' : buffer
+             'payload' : helpers.parseJsonToObject(buffer)
         }
-
+        
         // Route the request to the handler specified in the router
         chosenHandler(data, function(statusCode, payload){
             statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
